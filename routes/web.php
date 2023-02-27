@@ -50,3 +50,13 @@ Route::get('afolake', [AfolakeController::class, 'index']);
 
 
 Route::get('welcome', [WelcomeController::class, 'index']);
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
