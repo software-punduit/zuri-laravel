@@ -35,8 +35,7 @@ use App\Http\Controllers\WelcomeController;
 
 
 Route::get('/', function () {
-   // return view('welcome');
-   return 'Hello Laravel';
+   return view('welcome');
 });
 
 Route::get('afolake', [AfolakeController::class, 'index']);
