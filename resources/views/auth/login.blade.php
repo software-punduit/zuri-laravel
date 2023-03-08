@@ -8,7 +8,7 @@
         <!-- /.login-logo -->
         <div class="card">
           <div class="card-body login-card-body">
-            <p class="login-box-msg">Sign in to start your session</p>
+            <p class="login-box-msg">Log into your account</p>
       
             <form action="../../index3.html" method="post">
               <div class="input-group mb-3">
@@ -45,10 +45,10 @@
             </form>
          
             <p class="mb-1">
-              <a href="forgot-password.html">I forgot my password</a>
+              <a href="{{ route('password.request') }}">Forgot password</a>
             </p>
             <p class="mb-0">
-              <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
+              <a href="{{ route('register') }}" class="text-center">Register</a>
             </p>
           </div>
           <!-- /.login-card-body -->
