@@ -48,14 +48,21 @@
                     Just let us know your email address and we will email you a password reset link.
                 </p>
 
-                <form action="recover-password.html" method="post">
+                <form action="{{ route('password.email') }}" method="post">
+                    @csrf
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            placeholder="Email" name="email" value="{{ old('email') }}">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
+                        @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="row">
                         <div class="col-12">
