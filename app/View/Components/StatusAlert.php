@@ -6,14 +6,15 @@ use Illuminate\View\Component;
 
 class StatusAlert extends Component
 {
+    // public string $value;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(public string $value = "")
     {
-        //
+        // $this->value = $value;
     }
 
     /**
