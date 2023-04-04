@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AfolakeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 
 /*
@@ -38,7 +39,9 @@ Route::get('/', function () {
    return view('welcome');
 });
 
-Route::get('afolake', [AfolakeController::class, 'index']);
+Route::resource('profiles', ProfileController::class);
+
+
 
 // Create a route called `welcome` and display the message
 // `Welcome to my web app` using a controller when the

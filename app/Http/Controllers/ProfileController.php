@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostProfile;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -30,12 +32,25 @@ class ProfileController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\PostProfile  $request
+     * @return \Illuminate\Http\Response|mixed
      */
-    public function store(Request $request)
+    public function store(PostProfile $request)
     {
-        //
+        $user = Auth::user();
+        $profile = $user->profile;
+        $profileData = $request->only(['phone', 'address']);
+        $userData = $request->only('name');
+        $user->update($userData);
+        if ($profile === null) {
+           $user->profile()->create($profileData);
+        }else{
+            $profile->update($profileData);
+        }
+        
+        return back()->with([
+            'status' => 'Profile updated successfully'
+        ]);
     }
 
     /**
