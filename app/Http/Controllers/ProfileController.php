@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PostProfile;
+use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostProfile;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -46,6 +47,13 @@ class ProfileController extends Controller
            $user->profile()->create($profileData);
         }else{
             $profile->update($profileData);
+        }
+
+        if ($request->file('photo')->isValid()) {
+            $disk = config('filesystems.default');
+            $path = $request->photo->store('', $disk);
+            $user->addMediaFromDisk($path, $disk)
+            ->toMediaCollection(User::AVATAR_COLLECTION);
         }
         
         return back()->with([
