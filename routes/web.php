@@ -62,3 +62,18 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+
+// Roles
+// 1. Admin
+// 2. Super Admin
+// 3. Restuarant owners
+// 4. Restuarant staff
+// 5. Customers
+
+// Permissions
+// (admin) create users, view users, activate/deactivate users, update users
+// (super admin)
+// (restuarant owner)
+// (restuarant staff)
+// (customers)

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -23,8 +24,14 @@ class User extends Authenticatable implements HasMedia
     use Notifiable;
     use TwoFactorAuthenticatable;
     use InteractsWithMedia;
+    use HasRoles;
 
     const AVATAR_COLLECTION = 'avatars';
+    const ADMIN = 'admin';
+    const SUPER_ADMIN = 'super admin';
+    const RESTUARANT_OWNER = 'restuarant owner';
+    const RESTUARANT_STAFF = 'restuarant staff';
+    const CUSTOMER = 'customer';
 
     /**
      * The attributes that are mass assignable.
@@ -83,7 +90,6 @@ class User extends Authenticatable implements HasMedia
         ->singleFile()
         ->useFallbackUrl('/img/user2-160x160.jpg')
         ->useFallbackPath(asset('img/user2-160x160.jpg'));
-
     }
 
     protected function avatarUrl(): Attribute
