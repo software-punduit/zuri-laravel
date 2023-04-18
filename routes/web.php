@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AfolakeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -41,7 +42,7 @@ Route::get('/', function () {
 
 Route::resource('profiles', ProfileController::class);
 
-
+Route::resource('users', UserController::class);
 
 // Create a route called `welcome` and display the message
 // `Welcome to my web app` using a controller when the

@@ -16,7 +16,8 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- JQVMap -->
@@ -40,7 +41,17 @@
                 width="60">
         </div>
 
-        {{$slot}}
+        <x-header-nav></x-header-nav>
+        <x-sidebar></x-sidebar>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">           
+            <!-- Main content -->
+            {{ $slot }}
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
         <footer class="main-footer">
             <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
             All rights reserved.
