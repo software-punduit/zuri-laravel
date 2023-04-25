@@ -25,6 +25,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Active</th>
+                                        <th>Roles</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -40,6 +41,9 @@
                                             <td
                                                 class="{{ is_null($user->profile) ? 'text-danger' : ($user->profile->active ? 'text-success' : 'text-danger') }}">
                                                 {{ is_null($user->profile) ? 'No' : ($user->profile->active ? 'Yes' : 'No') }}
+                                            </td>
+                                            <td>
+                                                {{ $user->getRoleNames()->join(', ', ', and') }}
                                             </td>
                                             <td>
                                                 <button class="btn btn-primary" title="Activate">

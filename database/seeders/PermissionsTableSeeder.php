@@ -22,6 +22,9 @@ class PermissionsTableSeeder extends Seeder
         // Customer => create restuarant, edit restuarant etc..
         // Define the roles and permissions
         $seeds = [
+            User::SUPER_ADMIN => [
+                'users.*',
+            ],
             User::ADMIN => [
                 'users.create.*',
                 'users.view.*',
