@@ -16,7 +16,10 @@
             </div>
             <div class="info">
                 <a href="{{ route('profile.show') }}" class="d-block">
-                    {{ Auth::user()->name }}
+                    {{ Auth::user()->name }} <br>
+                    <span class="text-secondary">
+                        {{ Auth::user()->higest_role }}
+                    </span>
                 </a>
             </div>
         </div>

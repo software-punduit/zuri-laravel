@@ -23,21 +23,18 @@ class PermissionsTableSeeder extends Seeder
         // Define the roles and permissions
         $seeds = [
             User::SUPER_ADMIN => [
-                'users.*',
+                'users.create,update,view,activate,deactivate',
             ],
             User::ADMIN => [
-                'users.create.*',
-                'users.view.*',
-                'users.activate.*',
-                'users.deactivate.*',
+                'users.create,update,view',
             ],
             User::RESTUARANT_OWNER => [
-                'staff.*',
+                'staff.create,update,view,activate,deactivate',
             ],
             User::RESTUARANT_STAFF => [
             ],
             User::CUSTOMER => [
-                'restuarant.*',
+                'restuarant.create,update,view,activate,deactivate',
             ],
         ];
         // Populate the database roles
