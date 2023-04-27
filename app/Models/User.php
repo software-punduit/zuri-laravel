@@ -72,7 +72,8 @@ class User extends Authenticatable implements HasMedia
      */
     protected $appends = [
         'avatar_url',
-        'highest_role'
+        'highest_role',
+        'active'
     ];
 
     /**
@@ -88,9 +89,9 @@ class User extends Authenticatable implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection(self::AVATAR_COLLECTION)
-        ->singleFile()
-        ->useFallbackUrl('/img/user2-160x160.jpg')
-        ->useFallbackPath(asset('img/user2-160x160.jpg'));
+            ->singleFile()
+            ->useFallbackUrl('/img/user2-160x160.jpg')
+            ->useFallbackPath(asset('img/user2-160x160.jpg'));
     }
 
     protected function avatarUrl(): Attribute
@@ -103,17 +104,27 @@ class User extends Authenticatable implements HasMedia
     protected function highestRole(): Attribute
     {
         return Attribute::make(
-            get: function(){
-                if($this->hasRole(self::SUPER_ADMIN)){
-                    return self::SUPER_ADMIN;
-                }else if($this->hasRole(self::ADMIN)){
-                    return self::ADMIN;
-                }else if($this->hasRole(self::RESTUARANT_OWNER)){
-                    return self::RESTUARANT_OWNER;
-                }else{
-                    return self::CUSTOMER;
-                }
-            }
+            get: fn () => $this->getHighestRole()
         );
+    }
+
+    protected function active(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => is_null($this->profile) ? false : $this->profile->active
+        );
+    }
+
+    public function getHighestRole()
+    {
+        if ($this->hasRole(self::SUPER_ADMIN)) {
+            return self::SUPER_ADMIN;
+        } else if ($this->hasRole(self::ADMIN)) {
+            return self::ADMIN;
+        } else if ($this->hasRole(self::RESTUARANT_OWNER)) {
+            return self::RESTUARANT_OWNER;
+        } else {
+            return self::CUSTOMER;
+        }
     }
 }

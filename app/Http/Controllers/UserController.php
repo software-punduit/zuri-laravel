@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Http\Requests\PutUser;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
@@ -20,7 +24,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $user = Auth::user();
+        $users = User::where('id', '!=', $user->id)
+            ->get();
         
         return view('users.index', compact('users'));
     }
@@ -71,13 +77,28 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\PutUser  $request
+     * @param  User  $user
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(PutUser $request, User $user)
     {
-        //
+        $data = $request->validated();
+
+        $profile = $user->profile;
+
+        // If the profile doesn't exist
+        if(is_null($profile)){
+            // create a new one
+            Profile::create($data);
+        }else{
+            // update the existing profile
+            $profile->update($data);
+        }
+
+        return back()->with([
+            'status' => 'Updated successfully'
+        ]);
     }
 
     /**

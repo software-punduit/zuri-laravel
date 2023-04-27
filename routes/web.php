@@ -40,9 +40,7 @@ Route::get('/', function () {
    return view('welcome');
 });
 
-Route::resource('profiles', ProfileController::class);
 
-Route::resource('users', UserController::class);
 
 // Create a route called `welcome` and display the message
 // `Welcome to my web app` using a controller when the
@@ -62,6 +60,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('profiles', ProfileController::class);
+
+    Route::resource('users', UserController::class);
 });
 
 
