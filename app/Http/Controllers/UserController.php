@@ -9,6 +9,7 @@ use App\Http\Requests\PutUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
@@ -66,12 +67,12 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  User  $user
+     * @return \Illuminate\Http\Response|View
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -83,17 +84,20 @@ class UserController extends Controller
      */
     public function update(PutUser $request, User $user)
     {
-        $data = $request->validated();
+        $profileData = $request->only('active');
+        $userData = $request->only('name');
+
+        $user->update($userData); // Update the user's data
 
         $profile = $user->profile;
 
         // If the profile doesn't exist
         if(is_null($profile)){
             // create a new one
-            Profile::create($data);
+            Profile::create($profileData);
         }else{
             // update the existing profile
-            $profile->update($data);
+            $profile->update($profileData);
         }
 
         return back()->with([

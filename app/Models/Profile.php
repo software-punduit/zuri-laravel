@@ -9,6 +9,8 @@ class Profile extends Model
 {
     use HasFactory;
 
+    const ACTIVE = 1;
+
     protected $fillable = [
         'phone', 
         'address',

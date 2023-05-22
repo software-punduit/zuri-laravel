@@ -43,7 +43,7 @@
                 data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
        with font-awesome or any other icon font library -->
-                <li class="nav-item menu-open">
+                <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ Route::currentRouteName() === 'dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -53,9 +53,9 @@
                     </a>
                 </li>
                 @can('users.view.*')
-                    <li class="nav-item menu-open">
+                    <li class="nav-item">
                         <a href="{{ route('users.index') }}"
-                            class="nav-link {{ Route::currentRouteName() === 'users.index' ? 'active' : '' }}">
+                            class="nav-link {{ Str::startsWith(Route::current()->uri(), 'users') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users"></i>
                             <p>
                                 Users

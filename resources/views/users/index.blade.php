@@ -65,9 +65,9 @@
                                                 </form>
 
 
-                                                <button class="btn btn-secondary" title="Edit">
+                                                <a class="btn btn-secondary" href="{{ route('users.edit', $user->id) }}" title="Edit">
                                                     <i class="fas fa-edit"></i>
-                                                </button>
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
