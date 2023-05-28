@@ -17,6 +17,13 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Users</h3>
+
+                            <div class="card-tools">
+                                <a href="{{ route('users.create') }}" class="btn btn-link" title="Add User">
+                                    <i class="fas fa-plus"></i>
+                                    Add User
+                                </a>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -46,7 +53,8 @@
                                                 {{ $user->getRoleNames()->join(', ', ', and') }}
                                             </td>
                                             <td>
-                                                <form action="{{ route('users.update', $user->id) }}" method="post" style="display: inline-block">
+                                                <form action="{{ route('users.update', $user->id) }}" method="post"
+                                                    style="display: inline-block">
                                                     @csrf
                                                     @method('put')
 
@@ -65,7 +73,8 @@
                                                 </form>
 
 
-                                                <a class="btn btn-secondary" href="{{ route('users.edit', $user->id) }}" title="Edit">
+                                                <a class="btn btn-secondary"
+                                                    href="{{ route('users.edit', $user->id) }}" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </td>
