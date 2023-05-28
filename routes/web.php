@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AfolakeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 
 /*
@@ -38,7 +40,7 @@ Route::get('/', function () {
    return view('welcome');
 });
 
-Route::get('afolake', [AfolakeController::class, 'index']);
+
 
 // Create a route called `welcome` and display the message
 // `Welcome to my web app` using a controller when the
@@ -58,4 +60,23 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('profiles', ProfileController::class);
+
+    Route::resource('users', UserController::class);
 });
+
+
+// Roles
+// 1. Admin
+// 2. Super Admin
+// 3. Restuarant owners
+// 4. Restuarant staff
+// 5. Customers
+
+// Permissions
+// (admin) create users, view users, activate/deactivate users, update users
+// (super admin)
+// (restuarant owner)
+// (restuarant staff)
+// (customers)
