@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\PostRestaurant;
+use Illuminate\Http\RedirectResponse;
 
 
 class RestaurantController extends Controller
@@ -39,12 +42,24 @@ class RestaurantController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\PostRestaurant  $request
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function store(Request $request)
+    public function store(PostRestaurant $request)
     {
-        //
+        //validate the request
+        //get the data from the form request object
+        //Store the record based on the data
+
+        $data = $request->validated();
+        $user = Auth::user();
+        $user->restaurants()->create($data);
+
+        $user->assignRole(User::RESTUARANT_OWNER);
+
+        return redirect(route('restaurants.index'))->with([
+            'status' => 'Restaurant Created successfully'
+        ]);
     }
 
     /**

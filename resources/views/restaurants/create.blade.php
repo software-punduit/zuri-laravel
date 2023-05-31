@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Users"></x-content-header>
+    <x-content-header title="Restaurants"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
