@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PostRestaurant;
+use App\Http\Requests\PutRestaurant;
 use Illuminate\Http\RedirectResponse;
 
 
@@ -77,23 +78,32 @@ class RestaurantController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|View
      */
     public function edit(Restaurant $restaurant)
     {
-        //
+        return view('restaurants.edit', compact('restaurant'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PutRestaurant  $request
      * @param  \App\Models\Restaurant  $restaurant
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function update(Request $request, Restaurant $restaurant)
+    public function update(PutRestaurant $request, Restaurant $restaurant)
     {
-        //
+        //validate the request
+        //Get the data from the form request
+        //Update the restaurant record with the new data
+
+        $data = $request->validated();
+        $restaurant->update($data);
+
+        return redirect(route('restaurants.index'))->with([
+            'status' => 'Restaurant updated Successfully'
+        ]);
     }
 
     /**
