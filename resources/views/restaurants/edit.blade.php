@@ -16,6 +16,7 @@
                         <!-- form start -->
                         <form action="{{ route('restaurants.update', $restaurant->id) }}" method="post">
                             @csrf
+                            @method('put')
 
                             <div class="card-body">
                                 <div class="form-group">
