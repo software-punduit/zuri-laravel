@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AfolakeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\WelcomeController;
 
 /*
@@ -64,6 +65,8 @@ Route::middleware([
     Route::resource('profiles', ProfileController::class);
 
     Route::resource('users', UserController::class);
+
+    Route::resource('restaurants', RestaurantController::class);
 });
 
 
