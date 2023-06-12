@@ -44,23 +44,25 @@ class ProfileController extends Controller
         $userData = $request->only('name');
         $user->update($userData);
         if ($profile === null) {
-           $user->profile()->create($profileData);
-        }else{
+            $user->profile()->create($profileData);
+        } else {
             $profile->update($profileData);
         }
 
-        // If there is a valid file upload called
-        // 'photo'
-        if ($request->file('photo')->isValid()) {
-            // 1. Install media-library package
-            // 2. Setup the user model to use the library
-            $disk = config('filesystems.default');
-            $path = $request->photo->store('', $disk);
+        if ($request->has('photo')) {
+            // If there is a valid file upload called
+            // 'photo'
+            if ($request->file('photo')->isValid()) {
+                // 1. Install media-library package
+                // 2. Setup the user model to use the library
+                $disk = config('filesystems.default');
+                $path = $request->photo->store('', $disk);
 
-            $user->addMediaFromDisk($path, $disk)
-            ->toMediaCollection(User::AVATAR_COLLECTION);
+                $user->addMediaFromDisk($path, $disk)
+                    ->toMediaCollection(User::AVATAR_COLLECTION);
+            }
         }
-        
+
         return back()->with([
             'status' => 'Profile updated successfully'
         ]);

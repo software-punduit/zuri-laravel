@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     @endpush
 
-    <x-content-header title="Restaurants"></x-content-header>
+    <x-content-header title="Restaurant Staff"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
@@ -16,57 +16,58 @@
                     <x-status-alert></x-status-alert>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Restaurants</h3>
+                            <h3 class="card-title">Restaurant Staff</h3>
 
                             <div class="card-tools">
-                                <a href="{{ route('restaurants.create') }}" class="btn btn-link" title="Add Restaurant">
+                                <a href="{{ route('restaurant-staff.create') }}" class="btn btn-link" title="Add Restaurant Staff">
                                     <i class="fas fa-plus"></i>
-                                    Add Restaurant
+                                   <span class="d-none d-lg-inline"> Add Restaurant Staff</span>
                                 </a>
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="restaurants-table" class="table table-bordered table-striped">
+                        <div class="card-body table-responsive">
+                            <table id="staff-table" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Restaurant</th>
                                         <th>Name</th>
-                                        <th>Phone</th>
                                         <th>Email</th>
-                                        <th>Description</th>
+                                        <th>Phone</th>
                                         <th>Address</th>
                                         <th>Active</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($restaurants as $restaurant)
+                                    @foreach ($staffMembers as $staffMember)
                                         <tr>
                                             <td>
-                                                {{ $restaurant->name }}
+                                                {{ $staffMember->restaurant->name }}
                                             </td>
                                             <td>
-                                                {{ $restaurant->phone }}
+                                                {{ $staffMember->staff->name }}
                                             </td>
                                             <td>
-                                                {{ $restaurant->email }}
+                                                {{ $staffMember->staff->email }}
                                             </td>
                                             <td>
-                                                {{ $restaurant->description }}
+                                                {{ $staffMember->staff->profile->phone }}
+                                            </td>
+                                            
+                                            <td>
+                                                {{ $staffMember->staff->profile->address }}
+                                            </td>
+                                            <td class="{{ $staffMember->staff->active ? 'text-success' : 'text-danger' }}">
+                                                {{ $staffMember->staff->active ? 'Yes' : 'No' }}
                                             </td>
                                             <td>
-                                                {{ $restaurant->address }}
-                                            </td>
-                                            <td class="{{ $restaurant->active ? 'text-success' : 'text-danger' }}">
-                                                {{ $restaurant->active ? 'Yes' : 'No' }}
-                                            </td>
-                                            <td>
-                                                <form action="{{ route('restaurants.update', $restaurant->id) }}"
+                                                <form action="{{ route('restaurant-staff.update', $staffMember->id) }}"
                                                     method="post" style="display: inline-block">
                                                     @csrf
                                                     @method('put')
 
-                                                    @if ($restaurant->active)
+                                                    @if ($staffMember->staff->active)
                                                         <input type="hidden" name="active" value="0">
                                                         <button class="btn btn-danger" title="Deactivate"
                                                             type="submit">
@@ -82,7 +83,7 @@
 
 
                                                 <a class="btn btn-secondary"
-                                                    href="{{ route('restaurants.edit', $restaurant->id) }}"
+                                                    href="{{ route('restaurant-staff.edit', $staffMember->id) }}"
                                                     title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
@@ -117,12 +118,12 @@
 
         <script>
             $(function() {
-                $("#restaurants-table").DataTable({
+                $("#staff-table").DataTable({
                     "responsive": true,
                     "lengthChange": false,
                     "autoWidth": false,
                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                }).buttons().container().appendTo('#restaurants-table_wrapper .col-md-6:eq(0)');
+                }).buttons().container().appendTo('#staff-table_wrapper .col-md-6:eq(0)');
             });
         </script>
     @endpush
