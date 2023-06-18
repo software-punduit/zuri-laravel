@@ -62,7 +62,7 @@
                                                 {{ $staffMember->staff->active ? 'Yes' : 'No' }}
                                             </td>
                                             <td>
-                                                <form action="{{ route('restaurant-staff.update', $staffMember->id) }}"
+                                                <form action="{{ route('users.update', $staffMember->staff_id) }}"
                                                     method="post" style="display: inline-block">
                                                     @csrf
                                                     @method('put')

@@ -53,7 +53,7 @@ class RestaurantStaffPolicy
      */
     public function update(User $user, RestaurantStaff $restaurantStaff)
     {
-        //
+        return $user->can('staff.update') || $user->id === $restaurantStaff->staff_id;
     }
 
     /**

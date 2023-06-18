@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\PutRestaurantStaff;
 use App\Http\Requests\PostRestaurantStaff;
 
 class RestaurantStaffController extends Controller
@@ -70,7 +71,7 @@ class RestaurantStaffController extends Controller
             ]);
             $staff = User::create($staffData);
             event(new Registered($staff));
-            
+
             $restaurantStaffData = [
                 'staff_id' => $staff->id,
                 'restaurant_id' => $request->restaurant_id,
@@ -104,23 +105,51 @@ class RestaurantStaffController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\RestaurantStaff  $restaurantStaff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|View
      */
     public function edit(RestaurantStaff $restaurantStaff)
     {
-        //
+        $restaurantOwner = Auth::user();
+        $restaurants = $restaurantOwner->restaurants;
+        return view('restaurant-staff.edit', compact('restaurantStaff', 'restaurants'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PutRestaurantStaff $request
      * @param  \App\Models\RestaurantStaff  $restaurantStaff
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function update(Request $request, RestaurantStaff $restaurantStaff)
+    public function update(PutRestaurantStaff $request, RestaurantStaff $restaurantStaff)
     {
-        //
+        //validate the request
+        //get the data from the form request
+        //update the restaurant staff record
+
+        DB::beginTransaction();
+
+        try {
+            $restaurantStaffData = $request->only('restaurant_id');
+            $staffData = $request->only('name');
+
+            if ($request->has('password')) {
+                $staffData = array_merge($staffData, [
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            $restaurantStaff->update($restaurantStaffData);
+            $restaurantStaff->staff()->update($staffData);
+            DB::commit();
+
+            return redirect(route('restaurant-staff.index'))->with([
+                'status' => 'Restaurant Staff Updated Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
