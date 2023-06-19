@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Profile;
+use App\Models\RestaurantStaff;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -124,6 +126,8 @@ class User extends Authenticatable implements HasMedia
             return self::ADMIN;
         } else if ($this->hasRole(self::RESTUARANT_OWNER)) {
             return self::RESTUARANT_OWNER;
+        } else if ($this->hasRole(self::RESTUARANT_STAFF)) {
+            return self::RESTUARANT_STAFF;
         } else {
             return self::CUSTOMER;
         }
@@ -137,5 +141,15 @@ class User extends Authenticatable implements HasMedia
     public function restaurants(): HasMany
     {
         return $this->hasMany(Restaurant::class);
+    }
+
+    /**
+     * Get all of the restaurantStaff for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function restaurantStaff(): HasManyThrough
+    {
+        return $this->hasManyThrough(RestaurantStaff::class, Restaurant::class);
     }
 }

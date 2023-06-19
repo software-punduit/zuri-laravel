@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AfolakeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\RestaurantStaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +67,10 @@ Route::middleware([
     Route::resource('users', UserController::class);
 
     Route::resource('restaurants', RestaurantController::class);
+
+    Route::resource('restaurant-staff', RestaurantStaffController::class);
+
+    
 });
 
 
