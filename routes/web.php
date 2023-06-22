@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RestaurantStaffController;
+use App\Http\Controllers\RestaurantTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,8 @@ Route::middleware([
     Route::resource('restaurants', RestaurantController::class);
 
     Route::resource('restaurant-staff', RestaurantStaffController::class);
+
+    Route::resource('restaurant-tables', RestaurantTableController::class);
 
     
 });
