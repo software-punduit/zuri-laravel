@@ -53,7 +53,7 @@ class RestaurantTablePolicy
      */
     public function update(User $user, RestaurantTable $restaurantTable)
     {
-        //
+        return $user->can('table.update');
     }
 
     /**

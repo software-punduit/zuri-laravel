@@ -12,6 +12,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostRestaurantTable;
+use App\Http\Requests\PutRestaurantTable;
+use GuzzleHttp\RedirectMiddleware;
 use PhpParser\Node\Stmt\TryCatch;
 
 class RestaurantTableController extends Controller
@@ -59,7 +61,6 @@ class RestaurantTableController extends Controller
         $user = Auth::user();
         $restaurants = $user->restaurants;
         return view('restaurant-tables.create', compact('restaurants'));
-        
     }
 
     /**
@@ -79,11 +80,11 @@ class RestaurantTableController extends Controller
         try {
             $restaurantTableData = $request->except('photo');
             $restaurantTable = RestaurantTable::create($restaurantTableData);
-    
+
             $this->uploadPhoto($request, 'photo', $restaurantTable, RestaurantTable::MEDIA_COLLECTION);
 
             DB::commit();
-    
+
             return redirect(route('restaurant-tables.index'))->with([
                 'status' => 'Restaurant Table Created Successfully'
             ]);
@@ -91,9 +92,6 @@ class RestaurantTableController extends Controller
             DB::rollBack();
             throw $th;
         }
-
-      
-
     }
 
     /**
@@ -111,23 +109,35 @@ class RestaurantTableController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\RestaurantTable  $restaurantTable
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|View
      */
     public function edit(RestaurantTable $restaurantTable)
     {
-        //
+        $user = Auth::user();
+        $restaurants = $user->restaurants;
+
+        return view('restaurant-tables.edit', compact('restaurantTable', 'restaurants'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PutRestaurantTable  $request
      * @param  \App\Models\RestaurantTable  $restaurantTable
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function update(Request $request, RestaurantTable $restaurantTable)
+    public function update(PutRestaurantTable $request, RestaurantTable $restaurantTable)
     {
-        //
+        //Validate the request
+        //Get the data from the form request
+        //Update the restaurant table record
+
+        $restaurantTableData = $request->only('active');
+        $restaurantTable->update($restaurantTableData);
+
+        return redirect(route('restaurant-tables.index'))->with([
+            'status' => 'Restaurant Table Updated Successfully'
+        ]);
     }
 
     /**
