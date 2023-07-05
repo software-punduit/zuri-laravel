@@ -45,7 +45,7 @@
                                     <label for="photo">Picture</label>
                                     <input type="file"
                                     class="form-control @error('photo') is-invalid @enderror"
-                                    id="photo" name="photo" required>
+                                    id="photo" name="photo">
                                     @error('photo')
                                         <div class="invalid-feedback">
                                             {{ $message }}

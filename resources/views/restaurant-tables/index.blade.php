@@ -19,11 +19,13 @@
                             <h3 class="card-title">Restaurant Tables</h3>
 
                             <div class="card-tools">
-                                <a href="{{ route('restaurant-tables.create') }}" class="btn btn-link"
-                                    title="Add Restaurant Tables">
-                                    <i class="fas fa-plus"></i>
-                                    <span class="d-none d-lg-inline"> Add Restaurant Tables</span>
-                                </a>
+                                @can('table.create')
+                                    <a href="{{ route('restaurant-tables.create') }}" class="btn btn-link"
+                                        title="Add Restaurant Tables">
+                                        <i class="fas fa-plus"></i>
+                                        <span class="d-none d-lg-inline"> Add Restaurant Tables</span>
+                                    </a>
+                                @endcan
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -46,7 +48,9 @@
                                                 {{ $restaurantTable->restaurant->name }}
                                             </td>
                                             <td>
-                                                <img class="img-thumbnail" width="100px" height="100px" src="{{ $restaurantTable->photo_url }}" alt="{{ $restaurantTable->name }} Picture">
+                                                <img class="img-thumbnail" width="100px" height="100px"
+                                                    src="{{ $restaurantTable->photo_url }}"
+                                                    alt="{{ $restaurantTable->name }} Picture">
                                             </td>
                                             <td>
                                                 {{ $restaurantTable->name }}
@@ -54,36 +58,38 @@
                                             <td>
                                                 {{ number_format($restaurantTable->reservation_fee) }}
                                             </td>
-                                            <td
-                                                class="{{ $restaurantTable->active ? 'text-success' : 'text-danger' }}">
+                                            <td class="{{ $restaurantTable->active ? 'text-success' : 'text-danger' }}">
                                                 {{ $restaurantTable->active ? 'Yes' : 'No' }}
                                             </td>
                                             <td>
-                                                <form action="{{ route('restaurant-tables.update', $restaurantTable->id) }}"
-                                                    method="post" style="display: inline-block">
-                                                    @csrf
-                                                    @method('put')
+                                                @can('table.update')
+                                                    <form
+                                                        action="{{ route('restaurant-tables.update', $restaurantTable->id) }}"
+                                                        method="post" style="display: inline-block">
+                                                        @csrf
+                                                        @method('put')
 
-                                                    @if ($restaurantTable->active)
-                                                        <input type="hidden" name="active" value="0">
-                                                        <button class="btn btn-danger" title="Deactivate"
-                                                            type="submit">
-                                                            <i class="fas fa-power-off"></i>
-                                                        </button>
-                                                    @else
-                                                        <input type="hidden" name="active" value="1">
-                                                        <button class="btn btn-primary" title="Activate" type="submit">
-                                                            <i class="fas fa-power-off"></i>
-                                                        </button>
-                                                    @endif
-                                                </form>
+                                                        @if ($restaurantTable->active)
+                                                            <input type="hidden" name="active" value="0">
+                                                            <button class="btn btn-danger" title="Deactivate"
+                                                                type="submit">
+                                                                <i class="fas fa-power-off"></i>
+                                                            </button>
+                                                        @else
+                                                            <input type="hidden" name="active" value="1">
+                                                            <button class="btn btn-primary" title="Activate" type="submit">
+                                                                <i class="fas fa-power-off"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
 
 
-                                                <a class="btn btn-secondary"
-                                                    href="{{ route('restaurant-tables.edit', $restaurantTable->id) }}"
-                                                    title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                    <a class="btn btn-secondary"
+                                                        href="{{ route('restaurant-tables.edit', $restaurantTable->id) }}"
+                                                        title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
