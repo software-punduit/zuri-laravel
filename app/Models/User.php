@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Profile;
 use App\Models\RestaurantStaff;
+use App\Models\RestaurantTable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -151,5 +152,15 @@ class User extends Authenticatable implements HasMedia
     public function restaurantStaff(): HasManyThrough
     {
         return $this->hasManyThrough(RestaurantStaff::class, Restaurant::class);
+    }
+
+    /**
+     * Get all of the restaurantTables for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function restaurantTables(): HasManyThrough
+    {
+        return $this->hasManyThrough(RestaurantTable::class, Restaurant::class);
     }
 }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Profile;
+use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostProfile;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
+    use UploadsPhoto;
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +51,9 @@ class ProfileController extends Controller
             $profile->update($profileData);
         }
 
-        if ($request->has('photo')) {
+        $this->uploadPhoto($request, 'photo', $user, User::AVATAR_COLLECTION);
+
+      /*   if ($request->has('photo')) {
             // If there is a valid file upload called
             // 'photo'
             if ($request->file('photo')->isValid()) {
@@ -61,7 +65,7 @@ class ProfileController extends Controller
                 $user->addMediaFromDisk($path, $disk)
                     ->toMediaCollection(User::AVATAR_COLLECTION);
             }
-        }
+        } */
 
         return back()->with([
             'status' => 'Profile updated successfully'
