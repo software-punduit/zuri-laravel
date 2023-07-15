@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -73,7 +74,8 @@ Route::middleware([
 
     Route::resource('restaurant-tables', RestaurantTableController::class);
 
-    
+    Route::resource('menus', MenuController::class);
+       
 });
 
 
