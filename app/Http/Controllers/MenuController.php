@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostMenu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class MenuController extends Controller
 {
+    use UploadsPhoto;
+
     public function __construct() {
         $this->authorizeResource(Menu::class, 'menu');
     }
@@ -38,13 +44,38 @@ class MenuController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *s
+     * @param  \App\Http\Requests\PostMenu  $request
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function store(Request $request)
+    public function store(PostMenu $request)
     {
-        //
+        //Validate the request
+        //Get the form data
+        //Store the menu data
+
+        DB::beginTransaction();
+
+        try {
+            $menuData = $request->validated();
+            $user = Auth::user();
+            $menu = $user->menus()->create($menuData);
+            $this->uploadPhoto($request, 'photo', $menu, Menu::MEDIA_COLLECTION);
+
+            DB::commit();
+
+            return redirect(route('menus.index'))->with([
+                'status' => 'Menu item created successfully'
+            ]);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+
+
+
+
     }
 
     /**
