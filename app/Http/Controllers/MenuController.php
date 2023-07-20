@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\User;
 use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use App\Http\Requests\PutMenu;
 use App\Http\Requests\PostMenu;
+use App\Models\RestaurantStaff;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +30,16 @@ class MenuController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $menus = $user->menus;
+        if ($user->hasRole(User::RESTUARANT_OWNER)) {
+            $menus = $user->menus;
+        } else {
+            $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
+                ->pluck('restaurant_id');
+            $menus = Menu::whereHas('restaurant', function ($query) use ($restaurantIds) {
+                $query->whereIn('restaurant_id', $restaurantIds);
+            })->get();
+        }
+
         return view('menus.index', compact('menus'));
     }
 
