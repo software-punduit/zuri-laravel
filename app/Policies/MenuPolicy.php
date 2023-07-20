@@ -53,7 +53,7 @@ class MenuPolicy
      */
     public function update(User $user, Menu $menu)
     {
-        //
+        return $user->can('menu.update');
     }
 
     /**

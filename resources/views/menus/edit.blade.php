@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Restaurant Tables"></x-content-header>
+    <x-content-header title="Menus"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
@@ -10,11 +10,11 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Edit Restaurant Table</h3>
+                            <h3 class="card-title">Edit Menu Item</h3>
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form action="{{ route('restaurant-tables.update', $restaurantTable->id) }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('menus.update', $menu->id) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('put')
 
@@ -22,7 +22,7 @@
                                 <div class="form-group">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" placeholder="Enter Name" value="{{ old('name', $restaurantTable->name) }}"
+                                        id="name" placeholder="Enter Name" value="{{ old('name', $menu->name) }}"
                                         name='name' required>
                                     @error('name')
                                         <div class="invalid-feedback">
@@ -31,11 +31,11 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="reservation_fee">Reservation Fee</label>
-                                    <input type="number" class="form-control @error('reservation_fee') is-invalid @enderror"
-                                        id="reservation_fee" placeholder="Enter Reservation Fee" value="{{ old('reservation_fee', $restaurantTable->reservation_fee) }}"
-                                        name='reservation_fee' min="0" step="0.01" required>
-                                    @error('reservation_fee')
+                                    <label for="price">Price</label>
+                                    <input type="number" class="form-control @error('price') is-invalid @enderror"
+                                        id="price" placeholder="Enter Price" value="{{ old('price', $menu->price) }}"
+                                        name='price' min="0" step="0.01" required>
+                                    @error('price')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -45,7 +45,7 @@
                                     <label for="photo">Picture</label>
                                     <input type="file"
                                     class="form-control @error('photo') is-invalid @enderror"
-                                    id="photo" name="photo">
+                                    id="photo" name="photo" required>
                                     @error('photo')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -58,7 +58,7 @@
                                         name="restaurant_id" id="restaurant_id" required>
                                         @foreach ($restaurants as $restaurant)
                                             <option value="{{ $restaurant->id }}"
-                                                {{ old('restaurant_id', $restaurantTable->restaurant_id) == $restaurant->id ? 'selected' : '' }}>
+                                                {{ old('restaurant_id', $menu->restaurant_id) == $restaurant->id ? 'selected' : '' }}>
                                                 {{ $restaurant->name }}
                                             </option>
                                         @endforeach

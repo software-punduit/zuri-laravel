@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
+use App\Http\Requests\PutMenu;
 use App\Http\Requests\PostMenu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
@@ -15,7 +16,8 @@ class MenuController extends Controller
 {
     use UploadsPhoto;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->authorizeResource(Menu::class, 'menu');
     }
     /**
@@ -67,15 +69,10 @@ class MenuController extends Controller
             return redirect(route('menus.index'))->with([
                 'status' => 'Menu item created successfully'
             ]);
-            
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
-
-
-
-
     }
 
     /**
@@ -93,23 +90,49 @@ class MenuController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|View
      */
     public function edit(Menu $menu)
     {
-        //
+        $restaurants = Auth::user()->restaurants;
+        return view('menus.edit', compact('menu', 'restaurants'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PutMenu  $request
      * @param  \App\Models\Menu  $menu
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
-    public function update(Request $request, Menu $menu)
+    public function update(PutMenu $request, Menu $menu)
     {
-        //
+        //Validate the request
+        //get the form data
+        //Update the menu item
+
+        DB::beginTransaction();
+
+        try {
+            $menuData = $request->only([
+                'name',
+                'price',
+                'restaurant_id',
+                'photo',
+                'active'
+            ]);
+            $menu->update($menuData);
+            $this->uploadPhoto($request, 'photo', $menu, Menu::MEDIA_COLLECTION);
+
+            DB::commit();
+
+            return redirect(route('menus.index'))->with([
+                'status' => 'Menu Item Updated Successfully'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     /**
