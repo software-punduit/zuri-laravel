@@ -163,4 +163,14 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasManyThrough(RestaurantTable::class, Restaurant::class);
     }
+
+    /**
+     * Get all of the menus for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function menus(): HasMany
+    {
+        return $this->hasMany(Menu::class, 'restaurant_owner_id');
+    }
 }
