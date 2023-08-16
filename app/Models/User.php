@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Order;
 use App\Models\Profile;
 use App\Models\RestaurantStaff;
 use App\Models\RestaurantTable;
@@ -172,5 +173,35 @@ class User extends Authenticatable implements HasMedia
     public function menus(): HasMany
     {
         return $this->hasMany(Menu::class, 'restaurant_owner_id');
+    }
+
+    /**
+     * Get all of the orders for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get all of the restaurantOwnerOrders for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function restaurantOwnerOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'restaurant_owner_id');
+    }
+
+    /**
+     * Get all of the restaurantStaffOrders for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function restaurantStaffOrders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, RestaurantStaff::class, 'restaurant_id', 'restaurant_id');
     }
 }
