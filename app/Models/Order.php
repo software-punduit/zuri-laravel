@@ -13,4 +13,12 @@ class Order extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELLED = 'cancelled';
 
+    protected $fillable = [
+        'user_id',
+        'sub-total',
+        'discount',
+        'net_total',
+        'status'
+    ];
+
 }
