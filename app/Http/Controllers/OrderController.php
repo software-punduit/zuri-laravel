@@ -6,9 +6,13 @@ use App\Models\Menu;
 use App\Models\User;
 use App\Models\order;
 use App\Models\OrderItem;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostOrder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class OrderController extends Controller
 {
@@ -45,15 +49,17 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $menuItems = Menu::active()->get();
-        return view('orders.create', compact('menuItems'));
+        $restaurants = Restaurant::active()->get();
+        $restaurant = $restaurants->first();
+        $menuItems = $restaurant->menuItems()->active()->get();
+        return view('orders.create', compact('menuItems', 'restaurants'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|RedirectResponse
      */
     public function store(PostOrder $request)
     {
@@ -76,7 +82,7 @@ class OrderController extends Controller
 
             foreach ($quantities as $key => $quantity) {
                 $productId = $productIds[$key];
-                $product = $products->first(function($value)use($productId))
+                $product = $products->first(function($value)use($productId)
                 {
                     return $value->id ==$productId;
 
@@ -86,7 +92,7 @@ class OrderController extends Controller
                 array_push($orderItems, [
                     'order_id' => $order->id,
                     'menu_id' => $product->id,
-                    'restaurant_id' => $product_restaurant->id,
+                    'restaurant_id' => $product->restaurant_id,
                     'restaurant_owner_id' => $product->restaurant_owner_id,
                     'quantity' => $quantity,
                     'total' => $subTotal,

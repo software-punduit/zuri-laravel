@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Constants;
 use App\Models\Restaurant;
+use App\Traits\ActivatesResource;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -16,6 +17,7 @@ class Menu extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use ActivatesResource;
 
     const MEDIA_COLLECTION = 'menu-items';
 
@@ -28,6 +30,10 @@ class Menu extends Model implements HasMedia
         'price',
         'active',
         'restaurant_owner_id'
+    ];
+
+    protected $appends = [
+        'photo_url'
     ];
 
     protected function price(): Attribute
@@ -73,8 +79,8 @@ class Menu extends Model implements HasMedia
         return $this->belongsTo(Restaurant::class);
     }
 
-    public function scopeActive($query){
-        return $query->where('active', SELF::ACTIVE);
+    // public function scopeActive($query){
+    //     return $query->where('active', SELF::ACTIVE);
         
-    }
+    // }
 }

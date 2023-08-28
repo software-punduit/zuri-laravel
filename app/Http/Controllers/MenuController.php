@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\User;
+use App\Models\Restaurant;
 use App\Traits\UploadsPhoto;
 use Illuminate\Http\Request;
 use App\Http\Requests\PutMenu;
@@ -27,10 +28,15 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response|View
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole(User::RESTUARANT_OWNER)) {
+        if ($request->has('restaurant')) {
+            $restaurant = Restaurant::find($request->restaurant);
+            $menus = $restaurant->menuItems()->with(['restaurant'])->get();
+            return response()->json($menus);
+        }
+        elseif ($user->hasRole(User::RESTUARANT_OWNER)) {
             $menus = $user->menus;
         } else {
             $restaurantIds = RestaurantStaff::where('staff_id', $user->id)
