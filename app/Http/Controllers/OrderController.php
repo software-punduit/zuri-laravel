@@ -70,11 +70,15 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
+            $user = Auth::user();
             $productIds = $request->product_ids;
             $quantities = $request->product_quantities;
             $products = Menu::whereIn('id', $productIds)->get();
+            $restaurant = Restaurant::find($request->restaurant_id);
             $orderData = [
                 'user_id' => $request->user()->id,
+                'restaurant_id' => $restaurant->id,
+                'restaurant_owner_id' => $restaurant->user_id,
             ];
             $order = Order::create($orderData);
             $orderItems = [];
@@ -90,7 +94,8 @@ class OrderController extends Controller
                 $subTotal = $quantity * $product->price;
                 $netTotal +=$subTotal;
                 array_push($orderItems, [
-                    'order_id' => $order->id,
+                    // 'order_id' => $order->id,
+                    'user_id' => $user->id,
                     'menu_id' => $product->id,
                     'restaurant_id' => $product->restaurant_id,
                     'restaurant_owner_id' => $product->restaurant_owner_id,
@@ -99,7 +104,7 @@ class OrderController extends Controller
                 ]);
 
             }
-            OrderItem::createMany($orderItems);
+            $order->orderItems()->createMany($orderItems);
             $order->update([
                 'sub_total' => $netTotal,
                 'net_total' => $netTotal,

@@ -20,14 +20,23 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="restaurant_id">Restaurant</label>
-                                        <select name="restaurant_id" class="form-control" id="restaurant_id">
-                                            @foreach ($restaurants as $restaurant)
-                                                <option value="{{ $restaurant->id }}">
-                                                    {{ $restaurant->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <div class="form-group">
+                                            <label for="restaurant_id">Restaurant</label>
+                                            <select name="restaurant_id"
+                                                class="form-control @error('restaurant_id') is-invalid @enderror"
+                                                id="restaurant_id">
+                                                @foreach ($restaurants as $restaurant)
+                                                    <option value="{{ $restaurant->id }}">
+                                                        {{ $restaurant->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('restaurant_id')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
                                         <hr width="100%">
                                     </div>
                                     <div class="col-md-12 cart">
@@ -235,7 +244,7 @@
                                                Cart</button>
                                        </div>
                                    </div>
-                               </div>`   
+                               </div>`
                                 });
 
                             }
