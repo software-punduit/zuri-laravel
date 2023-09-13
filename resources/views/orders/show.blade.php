@@ -16,14 +16,34 @@
                     <x-status-alert></x-status-alert>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Orders</h3>
+                            <h3 class="card-title">View Order {{ $order->order_number }}</h3>
 
                             <div class="card-tools">
-                                @can('order.create')
-                                    <a href="{{ route('orders.create') }}" class="btn btn-link" title="Add Order">
+                                @can('order.update')
+                                    {{-- <a href="{{ route('orders.create') }}" class="btn btn-link" title="Add Order">
                                         <i class="fas fa-plus"></i>
                                         <span class="d-none d-lg-inline"> Add Order</span>
-                                    </a>
+                                    </a> --}}
+
+                                    <form action="{{ route('orders.update', $order->id) }}" method="post"
+                                        style="display: inline-block">
+                                        @csrf
+                                        @method('put')
+
+                                        @if ($order->status == 'completed')
+                                            
+                                            <button class="btn btn-link" disabled>
+                                                <i class="fas fa-check"></i>
+                                                <span class="d-none d-lg-inline"> Order Completed </span>
+                                            </button>
+                                        @else
+                                            <input type="hidden" name="status" value="completed">
+                                            <button class="btn btn-link" title="Mark as Completed" type="submit">
+                                                <i class="fas fa-check"></i>
+                                                <span class="d-none d-lg-inline">Mark as Completed</span>
+                                            </button>
+                                        @endif
+                                    </form>
                                 @endcan
                             </div>
                         </div>
@@ -32,54 +52,27 @@
                             <table id="data-table" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Order No.</th>
-                                        <th>Restaurant</th>
-                                        <th>Customer</th>
-                                        <th>Price (£)</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Name</th>
+                                        <th>Unit Price (£)</th>
+                                        <th>Quantity</th>
+                                        <th>Total Price (£)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($orders as $order)
+                                    @foreach ($order->orderItems as $orderItem)
                                         <tr>
                                             <td>
-                                                {{ $order->order_number }}
+                                                {{ $orderItem->menu->name }}
                                             </td>
                                             <td>
-                                                {{ $order->restaurant->name }}
+                                                {{ number_format($orderItem->menu->price) }}
                                             </td>
 
                                             <td>
-                                                {{ $order->user->name }}
+                                                {{ number_format($orderItem->quantity) }}
                                             </td>
                                             <td>
-                                                {{ number_format($order->net_total) }}
-                                            </td>
-                                            <td
-                                                class="{{ $order->status == 'completed' ? 'text-success' : 'text-warning' }}">
-                                                {{ $order->status }}
-                                            </td>
-                                            <td>
-                                                @can('order.show')
-                                                    <a class="btn btn-secondary"
-                                                        href="{{ route('orders.show', $order->id) }}" title="Show">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                @endcan
-
-                                                <form action="{{ route('orders.update', $order->id) }}" method="post"
-                                                    style="display: inline-block">
-                                                    @csrf
-                                                    @method('put')
-            
-                                                    @if ($order->status  != 'completed')
-                                                        <input type="hidden" name="status" value="completed">
-                                                        <button class="btn btn-primary" title="Mark as Completed" type="submit">
-                                                            <i class="fas fa-check"></i>
-                                                        </button>
-                                                    @endif
-                                                </form>
+                                                {{ number_format($orderItem->total) }}
                                             </td>
                                         </tr>
                                     @endforeach

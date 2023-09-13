@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostOrder;
+use App\Http\Requests\PutOrder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,8 @@ use Illuminate\Http\RedirectResponse;
 
 class OrderController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->authorizeResource(Order::class, 'order');
     }
 
@@ -29,16 +31,15 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         $orders = collect([]);
-        
+
         if ($user->hasRole(User::RESTUARANT_OWNER)) {
-          $orders = $orders->concat($user->restaurantOwnerOrders);
+            $orders = $orders->concat($user->restaurantOwnerOrders);
         } elseif ($user->hasRole(User::RESTUARANT_STAFF)) {
             $orders = $orders->concat($user->restaurantStaffOrders);
-        }
-         else {
+        } else {
             $orders = $orders->concat($user->orders);
         }
-        
+
         return view('orders.index', compact('orders'));
     }
 
@@ -79,6 +80,7 @@ class OrderController extends Controller
                 'user_id' => $request->user()->id,
                 'restaurant_id' => $restaurant->id,
                 'restaurant_owner_id' => $restaurant->user_id,
+                'order_number' => Order::getOrderNumber() 
             ];
             $order = Order::create($orderData);
             $orderItems = [];
@@ -86,13 +88,11 @@ class OrderController extends Controller
 
             foreach ($quantities as $key => $quantity) {
                 $productId = $productIds[$key];
-                $product = $products->first(function($value)use($productId)
-                {
-                    return $value->id ==$productId;
-
+                $product = $products->first(function ($value) use ($productId) {
+                    return $value->id == $productId;
                 });
                 $subTotal = $quantity * $product->price;
-                $netTotal +=$subTotal;
+                $netTotal += $subTotal;
                 array_push($orderItems, [
                     // 'order_id' => $order->id,
                     'user_id' => $user->id,
@@ -102,7 +102,6 @@ class OrderController extends Controller
                     'quantity' => $quantity,
                     'total' => $subTotal,
                 ]);
-
             }
             $order->orderItems()->createMany($orderItems);
             $order->update([
@@ -114,7 +113,6 @@ class OrderController extends Controller
             return redirect(route('orders.index'))->with([
                 'status' => 'Order Created Successfully'
             ]);
-        
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -125,11 +123,11 @@ class OrderController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\order  $order
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|View
      */
     public function show(order $order)
     {
-        //
+        return view('orders.show', compact('order'));
     }
 
     /**
@@ -146,13 +144,19 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\PutOrder  $request
      * @param  \App\Models\order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, order $order)
+    public function update(PutOrder $request, order $order)
     {
-        //
+        
+        $data = $request->validated();
+        $order->update($data);
+        
+        return redirect(route('orders.index'))->with([
+            'status' => 'Order Updated Successfully'
+        ]);
     }
 
     /**
