@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     @endpush
 
-    <x-content-header title="Menus"></x-content-header>
+    <x-content-header title="Orders"></x-content-header>
 
     <!-- Main content -->
     <section class="content">
@@ -16,14 +16,13 @@
                     <x-status-alert></x-status-alert>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Menus</h3>
+                            <h3 class="card-title">Orders</h3>
 
                             <div class="card-tools">
-                                @can('menu.create')
-                                    <a href="{{ route('menus.create') }}" class="btn btn-link"
-                                        title="Add Menu">
+                                @can('order.create')
+                                    <a href="{{ route('orders.create') }}" class="btn btn-link" title="Add Order">
                                         <i class="fas fa-plus"></i>
-                                        <span class="d-none d-lg-inline"> Add Menu</span>
+                                        <span class="d-none d-lg-inline"> Add Order</span>
                                     </a>
                                 @endcan
                             </div>
@@ -33,63 +32,72 @@
                             <table id="data-table" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Order No.</th>
                                         <th>Restaurant</th>
-                                        <th>Picture</th>
-                                        <th>Name</th>
+                                        <th>Customer</th>
                                         <th>Price (£)</th>
-                                        <th>Active</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($menus as $menu)
+                                    @foreach ($orders as $order)
                                         <tr>
                                             <td>
-                                                {{ $menu->restaurant->name }}
+                                                {{ $order->order_number }}
                                             </td>
                                             <td>
-                                                <img class="img-thumbnail" width="100px" height="100px"
-                                                    src="{{ $menu->photo_url }}"
-                                                    alt="{{ $menu->name }} Picture">
+                                                {{ $order->restaurant->name }}
+                                            </td>
+
+                                            <td>
+                                                {{ $order->user->name }}
                                             </td>
                                             <td>
-                                                {{ $menu->name }}
+                                                {{ number_format($order->net_total) }}
+                                            </td>
+                                            <td
+                                                class="{{ $order->status == 'completed' ? 'text-success' : ($order->status == 'cancelled' ? 'text-danger' : 'text-warning') }}">
+                                                {{ $order->status }}
                                             </td>
                                             <td>
-                                                {{ number_format($menu->price) }}
-                                            </td>
-                                            <td class="{{ $menu->active ? 'text-success' : 'text-danger' }}">
-                                                {{ $menu->active ? 'Yes' : 'No' }}
-                                            </td>
-                                            <td>
-                                                @can('menu.update')
-                                                    <form
-                                                        action="{{ route('menus.update', $menu->id) }}"
+                                                @can('order.show')
+                                                    <a class="btn btn-secondary"
+                                                        href="{{ route('orders.show', $order->id) }}" title="Show">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                @endcan
+
+                                                @if ($order->user_id != Auth::user()->id)
+                                                    <form action="{{ route('orders.update', $order->id) }}"
                                                         method="post" style="display: inline-block">
                                                         @csrf
                                                         @method('put')
 
-                                                        @if ($menu->active)
-                                                            <input type="hidden" name="active" value="0">
-                                                            <button class="btn btn-danger" title="Deactivate"
+                                                        @if ($order->status == 'pending')
+                                                            <input type="hidden" name="status" value="completed">
+                                                            <button class="btn btn-primary" title="Mark as Completed"
                                                                 type="submit">
-                                                                <i class="fas fa-power-off"></i>
-                                                            </button>
-                                                        @else
-                                                            <input type="hidden" name="active" value="1">
-                                                            <button class="btn btn-primary" title="Activate" type="submit">
-                                                                <i class="fas fa-power-off"></i>
+                                                                <i class="fas fa-check"></i>
                                                             </button>
                                                         @endif
                                                     </form>
+                                                @else
+                                                    <form action="{{ route('orders.update', $order->id) }}"
+                                                        method="post" style="display: inline-block">
+                                                        @csrf
+                                                        @method('put')
 
+                                                        @if ($order->status == 'pending')
+                                                            <input type="hidden" name="status" value="cancelled">
+                                                            <button class="btn btn-danger" title="Cancel Order"
+                                                                type="submit">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                @endif
 
-                                                    <a class="btn btn-secondary"
-                                                        href="{{ route('menus.edit', $menu->id) }}"
-                                                        title="Edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
