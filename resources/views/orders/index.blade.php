@@ -57,7 +57,7 @@
                                                 {{ number_format($order->net_total) }}
                                             </td>
                                             <td
-                                                class="{{ $order->status == 'completed' ? 'text-success' : 'text-warning' }}">
+                                                class="{{ $order->status == 'completed' ? 'text-success' : ($order->status == 'cancelled' ? 'text-danger' : 'text-warning') }}">
                                                 {{ $order->status }}
                                             </td>
                                             <td>
@@ -68,18 +68,36 @@
                                                     </a>
                                                 @endcan
 
-                                                <form action="{{ route('orders.update', $order->id) }}" method="post"
-                                                    style="display: inline-block">
-                                                    @csrf
-                                                    @method('put')
-            
-                                                    @if ($order->status  != 'completed')
-                                                        <input type="hidden" name="status" value="completed">
-                                                        <button class="btn btn-primary" title="Mark as Completed" type="submit">
-                                                            <i class="fas fa-check"></i>
-                                                        </button>
-                                                    @endif
-                                                </form>
+                                                @if ($order->user_id != Auth::user()->id)
+                                                    <form action="{{ route('orders.update', $order->id) }}"
+                                                        method="post" style="display: inline-block">
+                                                        @csrf
+                                                        @method('put')
+
+                                                        @if ($order->status == 'pending')
+                                                            <input type="hidden" name="status" value="completed">
+                                                            <button class="btn btn-primary" title="Mark as Completed"
+                                                                type="submit">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('orders.update', $order->id) }}"
+                                                        method="post" style="display: inline-block">
+                                                        @csrf
+                                                        @method('put')
+
+                                                        @if ($order->status == 'pending')
+                                                            <input type="hidden" name="status" value="cancelled">
+                                                            <button class="btn btn-danger" title="Cancel Order"
+                                                                type="submit">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        @endif
+                                                    </form>
+                                                @endif
+
                                             </td>
                                         </tr>
                                     @endforeach
