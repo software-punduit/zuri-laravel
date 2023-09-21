@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Order;
+use App\Models\Wallet;
 use App\Models\Profile;
 use App\Models\RestaurantStaff;
 use App\Models\RestaurantTable;
@@ -47,6 +48,10 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+    ];
+
+    protected $with = [
+        'wallet'
     ];
 
     /**
@@ -203,5 +208,15 @@ class User extends Authenticatable implements HasMedia
     public function restaurantStaffOrders(): HasManyThrough
     {
         return $this->hasManyThrough(Order::class, RestaurantStaff::class, 'staff_id', 'restaurant_id');
+    }
+
+    /**
+     * Get the wallet associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class);
     }
 }
