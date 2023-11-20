@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Restaurant;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class RestaurantPolicy
+class TransactionPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class RestaurantPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('restaurants.view');
+        return $user->can('transaction.view');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Restaurant  $restaurant
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Restaurant $restaurant)
+    public function view(User $user, Transaction $transaction)
     {
-        return $user->can('restaurants.view') || $user->id === $restaurant->user_id;
+        //
     }
 
     /**
@@ -41,29 +41,29 @@ class RestaurantPolicy
      */
     public function create(User $user)
     {
-        return $user->can('restaurants.create');
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Restaurant  $restaurant
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Restaurant $restaurant)
+    public function update(User $user, Transaction $transaction)
     {
-        return $user->can('restaurants.update') || $user->id === $restaurant->user_id;
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Restaurant  $restaurant
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Restaurant $restaurant)
+    public function delete(User $user, Transaction $transaction)
     {
         //
     }
@@ -72,10 +72,10 @@ class RestaurantPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Restaurant  $restaurant
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Restaurant $restaurant)
+    public function restore(User $user, Transaction $transaction)
     {
         //
     }
@@ -84,10 +84,10 @@ class RestaurantPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Restaurant  $restaurant
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Restaurant $restaurant)
+    public function forceDelete(User $user, Transaction $transaction)
     {
         //
     }

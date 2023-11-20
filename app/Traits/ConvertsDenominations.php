@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Traits;
 
 
@@ -10,12 +11,17 @@ trait ConvertsDenominations
     // const ACTIVE = 1;
     // const INACTIVE = 0;
 
-    
-    function convertDenomination() : Attribute {
+
+    function convertDenomination(): Attribute
+    {
         return Attribute::make(
             get: fn (string $value) => ($value  / Constants::PENCE_TO_POUND),
             set: fn (string $value) => ($value * Constants::PENCE_TO_POUND),
         );
-        
-    }   
+    }
+
+    function convertToPence($value)
+    {
+        return $value * Constants::PENCE_TO_POUND;
+    }
 }
