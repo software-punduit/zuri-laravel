@@ -21,7 +21,7 @@ class TransactionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $transactions = Transaction::where('payee_id', $user->id)->orWhere('payer_id', $user->id)->get();
+        $transactions = Transaction::where('payee_id', $user->id)->orWhere('payer_id', $user->id)->latest()->get();
 
         return view('transactions.index', compact('transactions'));
     }
