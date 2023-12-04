@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\order;
+use App\Models\Wallet;
+use App\Models\Constants;
 use App\Models\OrderItem;
 use App\Models\Restaurant;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Http\Requests\PostOrder;
 use App\Http\Requests\PutOrder;
+use App\Http\Requests\PostOrder;
+use App\Models\TransactionStatus;
 use Illuminate\Support\Facades\DB;
+use App\Models\TransactionCategory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -77,10 +82,10 @@ class OrderController extends Controller
             $products = Menu::whereIn('id', $productIds)->get();
             $restaurant = Restaurant::find($request->restaurant_id);
             $orderData = [
-                'user_id' => $request->user()->id,
+                'user_id' => $user->id,
                 'restaurant_id' => $restaurant->id,
                 'restaurant_owner_id' => $restaurant->user_id,
-                'order_number' => Order::getOrderNumber() 
+                'order_number' => Order::getOrderNumber()
             ];
             $order = Order::create($orderData);
             $orderItems = [];
@@ -108,6 +113,43 @@ class OrderController extends Controller
                 'sub_total' => $netTotal,
                 'net_total' => $netTotal,
             ]);
+
+            $payerWallet = $user->wallet;
+            $payerBalanceBefore = $payerWallet->balance ?? 0;
+            if ($payerBalanceBefore < $netTotal) {
+                DB::rollBack();
+
+                return back()->with(['status' => 'insufficient-balance']);
+            }
+
+            $category = TransactionCategory::where('name', Constants::TRANSACTION_CATEGORY_ORDER)->first();
+            $status = TransactionStatus::where('name', Constants::TRANSACTION_STATUS_PENDING)->first();
+
+            $payeeWallet = Wallet::where('user_id', $restaurant->user_id)->first();
+            $payeeBalanceBefore = $payeeWallet->balance;
+
+            $transactionData = [
+                'transaction_category_id' => $category->id,
+                'transaction_status_id' => $status->id,
+                'payer_balance_before' => $payerBalanceBefore,
+                'payer_id' => $user->id,
+                'payee_balance_before' => $payeeBalanceBefore,
+                'payee_id' => $restaurant->user_id,
+                'amount' => $netTotal
+            ];
+
+            $transaction = Transaction::create($transactionData);
+            //update the wallet
+            if ($transaction->payer_id != $transaction->payee_id) {
+                $payerBalanceAfter =  $payerBalanceBefore - $transactionData['amount'];
+                $payeeBalanceAfter =  $payeeBalanceBefore + $transactionData['amount'];
+                $payerWallet->update(['balance' => $payerBalanceAfter]);
+                $payeeWallet->update(['balance' => $payeeBalanceAfter]);
+            }
+
+            $status = TransactionStatus::where('name', Constants::TRANSACTION_STATUS_COMPLETE)->first();
+            $transaction->update(['transaction_status_id' => $status->id]);
+
 
             DB::commit();
             return redirect(route('orders.index'))->with([
@@ -150,10 +192,10 @@ class OrderController extends Controller
      */
     public function update(PutOrder $request, order $order)
     {
-        
+
         $data = $request->validated();
         $order->update($data);
-        
+
         return redirect(route('orders.index'))->with([
             'status' => 'Order Updated Successfully'
         ]);

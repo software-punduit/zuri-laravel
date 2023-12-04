@@ -32,16 +32,22 @@ class PermissionsTableSeeder extends Seeder
                 'staff.create,update,view,activate,deactivate',
                 'table.create,update,view',
                 'menu.create,update,view',
-                'order.create,update,view,show'
+                'order.create,update,view,show',
+                'transaction.view,show',
+                'wallet.fund,withdraw'
             ],
             User::RESTUARANT_STAFF => [
                 'table.view',
                 'menu.view',
-                'order.create,update,view,show'
+                'order.create,update,view,show',
+                'transaction.view,show',
+                'wallet.fund'
             ],
             User::CUSTOMER => [
                 'restaurants.create,view',
-                'order.create,update,view'
+                'order.create,update,view',
+                'transaction.view,show',
+                'wallet.fund,withdraw'
             ],
         ];
         // Populate the database roles
